@@ -1,0 +1,8 @@
+{
+  "name": "coffee",
+  "version": "0.1.0",
+  "description": "A live terminal farm of your herdr agent panes",
+  "bin": { "coffee": "coffee.js" },
+  "license": "MIT",
+  "private": true
+}
