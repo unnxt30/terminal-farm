@@ -1,6 +1,6 @@
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
-  else root.Coffee = factory();
+  else root.TerminalFarm = factory();
 })(typeof window !== 'undefined' ? window : this, function () {
 'use strict';
 
@@ -162,7 +162,7 @@ var WINDMILL = [ // sails + tower, 7x8 px; two sail frames
 
 /* ======================= helpers ======================= */
 function fmtDur(s, long) {
-  if (s == null || !isFinite(s)) return '?'; // coffee: unknown duration
+  if (s == null || !isFinite(s)) return '?'; // terminal-farm: unknown duration
   s = Math.max(0, Math.floor(s));
   if (s < 60) return s + 's';
   var m = Math.floor(s / 60);
@@ -368,7 +368,7 @@ function render(S) {
   // --- windmill (turns slowly; faster while anything is working)
   var anyWorking = S.workspaces.some(function (w) { return w.panes.some(function (a) { return a.status === 'working'; }); });
   if (H >= 30) {
-    var wx = Math.floor(W * 0.8), wf = Math.floor(tick / (anyWorking ? 625 : 1500)) % 2; // coffee: always turns, faster while working
+    var wx = Math.floor(W * 0.8), wf = Math.floor(tick / (anyWorking ? 625 : 1500)) % 2; // terminal-farm: always turns, faster while working
     var wm = WINDMILL[wf], wy0 = hillTop - 5;
     wm.forEach(function (row, ry) {
       for (var rx = 0; rx < 7; rx++) {

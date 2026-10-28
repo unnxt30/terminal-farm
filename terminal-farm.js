@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// coffee: a live farm of your herdr agent panes. Data from herdr, durations from the
-// coffee-status pi extension (~/.coffee/state/<pid>.json), drawing from vendor/engine.js.
+// terminal-farm: a live farm of your herdr agent panes. Data from herdr, durations from the
+// terminal-farm-status pi extension (~/.terminal-farm/state/<pid>.json), drawing from vendor/engine.js.
 'use strict';
 const { execFile } = require('node:child_process');
 const fs = require('node:fs');
@@ -8,7 +8,7 @@ const os = require('node:os');
 const path = require('node:path');
 const E = require('./vendor/engine.js');
 
-const STATE_DIR = path.join(os.homedir(), '.coffee', 'state');
+const STATE_DIR = path.join(os.homedir(), '.terminal-farm', 'state');
 const MODE = process.argv.includes('--256') || !/truecolor|24bit/i.test(process.env.COLORTERM || '') ? '256' : 'truecolor';
 const ONCE = process.argv.includes('--once');
 const CAFFEINATE = !process.argv.includes('--no-caffeinate');
@@ -23,7 +23,7 @@ const herdr = (...args) => new Promise((res, rej) =>
 const mapStatus = s => s === 'working' ? 'working' : s === 'idle' || s === 'done' ? 'idle' : 'unknown';
 
 const pidOf = new Map();   // pane_id -> { pid, at }
-const seen = new Map();    // pane_id -> { status, since|null } as observed by this coffee run
+const seen = new Map();    // pane_id -> { status, since|null } as observed by this terminal-farm run
 let data = { workspaces: [], focus: null, error: null };
 
 async function piPid(paneId) {
@@ -56,7 +56,7 @@ async function poll() {
     agents.forEach((x, i) => {
       const status = mapStatus(x.agent_status);
       const prev = seen.get(x.pane_id);
-      // a transition coffee watched happen is a real timestamp; the first sighting is not
+      // a transition terminal-farm watched happen is a real timestamp; the first sighting is not
       const obs = !prev ? { status, since: null } : prev.status !== status ? { status, since: now } : prev;
       seen.set(x.pane_id, obs);
       const st = readState(pids[i]);
@@ -126,9 +126,9 @@ const KEYS = {
 async function main() {
   await poll();
   if (ONCE) { out(frame().join('\n') + '\n'); return; }
-  // keep the Mac awake while coffee runs; -w ends caffeinate when this process dies, even on a crash
+  // keep the Mac awake while terminal-farm runs; -w ends caffeinate when this process dies, even on a crash
   if (CAFFEINATE) execFile('caffeinate', ['-dims', '-w', String(process.pid)], () => {});
-  out((CAFFEINATE ? '\x1b]0;\u2615 coffee (caffeinated)\x07' : '\x1b]0;coffee\x07') + '\x1b[?1049h\x1b[?25l\x1b[2J');
+  out((CAFFEINATE ? '\x1b]0;\u2615 terminal-farm (caffeinated)\x07' : '\x1b]0;terminal-farm\x07') + '\x1b[?1049h\x1b[?25l\x1b[2J');
   process.on('SIGINT', quit); process.on('SIGTERM', quit);
   process.on('uncaughtException', e => { out('\x1b[0m\x1b[?25h\x1b[?1049l'); console.error(e); process.exit(1); });
   process.stdout.on('resize', () => { last = []; out('\x1b[2J'); });

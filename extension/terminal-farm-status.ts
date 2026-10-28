@@ -1,12 +1,12 @@
 // pi extension: records this pi process's state and when it entered it,
-// so `coffee` can show real "working for 4m" / "idle for 2h" durations.
-// Writes ~/.coffee/state/<pid>.json; removes it on shutdown.
+// so `terminal-farm` can show real "working for 4m" / "idle for 2h" durations.
+// Writes ~/.terminal-farm/state/<pid>.json; removes it on shutdown.
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-const dir = join(homedir(), ".coffee", "state");
+const dir = join(homedir(), ".terminal-farm", "state");
 const file = join(dir, `${process.pid}.json`);
 
 export default function (pi: ExtensionAPI) {
